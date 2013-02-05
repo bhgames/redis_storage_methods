@@ -1,10 +1,5 @@
-#This module is for Toplevel Objects that are intended for storage in redis, with possible nested subobjects that are not meant to be
-#stored independently in redis.
-
-# So a Battle is a Toplevel Object. Video is not - it's always nested in redis, so it's just normal. Video does not include this
-#module, but Battle would. A Toplevel Object should not reference another Toplevel Object via an association, but if it must, do not
-#put it in the associations_names method so that this Toplevel object doesnt try to store it. That's what this module uses
-# to determine associations with.
+require 'redis'
+require 'hiredis'
 module RedisStorageMethods
 
   module ClassMethods

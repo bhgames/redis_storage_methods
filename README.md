@@ -18,15 +18,26 @@ Or install it yourself as:
 
 ## Usage
 
-Presumably, you'll be passing hashes into your create method. Now you will need to pass them into your
+What this Gem does is provides a framework mixin for your models that exposes new methods that allow you to save to redis when you save to the database, and let you get/update redis without getting/updating the database until later(maybe under a cron job or something.) This is great if you want all the speed of redis but the querying reporting ability of SQL.
+
+When you create, normally you'll be passing hashes into your create method, most likely from form submission. Now you will need to pass them into your
   
     create_with_associations_and_redis(params)
 
-method. This is to differentiate between the two: This method will take your object and create it, and then store it in redis as a hash. It will not store it's associations unless you instruct it to do so. This is because redis has no ability to store foreign keyed objects, if a Battle has a Soldier in it, you can really only store it in a redis hash for Battle like this: soldier0hp, soldier0stamina, soldier1hp, soldier1stamina, etc.
+method. I didn't overwrite the create method, because I wanted to differentiate between the two: This method will take your object and create it, and then store it in redis as a hash. It will not store it's associations unless you instruct it to do so, as will be discussed further in depth below. This is because redis has no ability to store foreign keyed objects, if a Battle has a Soldier in it, you can really only store it in a redis hash for Battle like this: 
+  
+{
+battle_name
+battle_time
+soldier0hp 
+soldier0stamina
+soldier1hp
+soldier1stamina
+}
 
-You need to instruct it to do this.
- 
-Pretty easy here, just do:
+You can see how this is a limitation of redis - you can clearly see there are two soldiers in this battle hash but it only allows storing of hashes at the top level. You cannot store hashes in hashes, so you have to use this method. Because of this limitation, when I designed this mixin, I made it non-implementation specific for pushing associations with your model. 
+
+Pretty easy to use, just do:
 
     class Battle < ActiveRecord::Base
       include RedisStorageMethods

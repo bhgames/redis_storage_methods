@@ -14,4 +14,6 @@ Gem::Specification.new do |gem|
   gem.name          = "redis_storage_methods"
   gem.require_paths = ["lib"]
   gem.version       = RedisStorageMethods::VERSION
+  gem.add_dependency "redis"
+  gem.add_dependency "hiredis"
 end
